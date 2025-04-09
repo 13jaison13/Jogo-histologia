@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histologia Interativa - Jaison Silva</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    img {
+      max-width: 400px;
+      height: auto;
+      width: 100%;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .question {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      background: #e7ecf3;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #2a7be4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      display: none;
+    }
+    .info {
+      background: #d9f9e3;
+      padding: 15px;
+      margin-top: 20px;
+      border-left: 6px solid #3fb678;
+      text-align: left;
+      display: none;
+    }
+    .timer {
+      font-size: 1em;
+      margin-top: 10px;
+      color: #e03c3c;
+    }
+    .feedback {
+      font-size: 1.1em;
+      margin-top: 15px;
+      font-weight: bold;
+      display: none;
+    }
+    .score {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Histologia Interativa</h1>
+    <h3>Criado por Jaison Silva</h3>
+
+    <div class="question-section" id="quiz-container">
+      <p class="question" id="question-text"></p>
+      <img id="question-img" src="" alt="Imagem da lâmina">
+      <div class="options" id="options"></div>
+
+      <div class="feedback" id="feedback"></div>
+      <div class="info" id="info"></div>
+      <p class="timer" id="timer">Tempo restante: 90 segundos</p>
+      <p class="score" id="score">Pontuação: 0</p>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()">Próxima</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+  {
+    "text": "O que está indicado pelo número 1 na lâmina da Medula Óssea Vermelha?",
+    "img": "jogo_histologia_imagens/1.jpg",
+    "options": [
+      "Adipócito",
+      "Neutrófilo",
+      "Megacariócito",
+      "Monócito"
+    ],
+    "answer": "Megacariócito",
+    "info": "💡 Os megacariócitos são células grandes e multinucleadas presentes na medula óssea, responsáveis pela produção de plaquetas no sangue."
+  },
+  {
+    "text": "O que está indicado pelo número 2 na lâmina da Medula Óssea Vermelha?",
+    "img": "jogo_histologia_imagens/1.jpg",
+    "options": [
+      "Adipócito",
+      "Neutrófilo",
+      "Monócito",
+      "Megacariócito"
+    ],
+    "answer": "Adipócito",
+    "info": "💡 Os adipócitos armazenam gordura e aparecem em branco na coloração histológica."
+  },
+  {
+    "text": "Qual leucócito está indicado pela seta azul?",
+    "img": "jogo_histologia_imagens/2.jpg",
+    "options": [
+      "Eosinófilo",
+      "Linfócito",
+      "Neutrófilo",
+      "Monócito"
+    ],
+    "answer": "Neutrófilo",
+    "info": "💡 Neutrófilos possuem núcleo multilobulado e são os leucócitos mais comuns."
+  },
+  {
+    "text": "Qual célula está indicada pela seta vermelha?",
+    "img": "jogo_histologia_imagens/2.jpg",
+    "options": [
+      "Monócito",
+      "Linfócito",
+      "Eosinófilo",
+      "Basófilo"
+    ],
+    "answer": "Monócito",
+    "info": "💡 Monócitos são grandes, com núcleo em forma de rim, e viram macrófagos nos tecidos."
+  },
+  {
+    "text": "Qual célula está indicada pela seta vermelha nesta nova lâmina?",
+    "img": "jogo_histologia_imagens/3.jpg",
+    "options": [
+      "Neutrófilo",
+      "Eosinófilo",
+      "Linfócito",
+      "Basófilo"
+    ],
+    "answer": "Eosinófilo",
+    "info": "💡 Eosinófilos possuem grânulos alaranjados e são ativados em reações alérgicas e parasitoses."
+  },
+  {
+    "text": "Qual célula está indicada pela seta preta?",
+    "img": "jogo_histologia_imagens/4.jpg",
+    "options": [
+      "Linfócito",
+      "Monócito",
+      "Neutrófilo",
+      "Eosinófilo"
+    ],
+    "answer": "Linfócito",
+    "info": "💡 Linfócitos têm núcleo grande e arredondado, ocupando quase toda a célula."
+  },
+  {
+    "text": "Na lâmina do Endocárdio, o que está marcado como número 1?",
+    "img": "jogo_histologia_imagens/5.jpg",
+    "options": [
+      "Tecido conjuntivo denso",
+      "Mesotélio",
+      "Endotélio",
+      "Fibras de Purkinje"
+    ],
+    "answer": "Endotélio",
+    "info": "💡 O endotélio é o tecido que reveste internamente os vasos e cavidades cardíacas."
+  },
+  {
+    "text": "Na mesma lâmina, o que está indicado pelo número 3?",
+    "img": "jogo_histologia_imagens/5.jpg",
+    "options": [
+      "Fibras de Purkinje",
+      "Tecido epitelial",
+      "Cartilagem",
+      "Mesotélio"
+    ],
+    "answer": "Fibras de Purkinje",
+    "info": "💡 As fibras de Purkinje são responsáveis pela condução elétrica no coração."
+  },
+  {
+    "text": "O que representa o número 1 na lâmina do Epicárdio?",
+    "img": "jogo_histologia_imagens/6.jpg",
+    "options": [
+      "Endotélio",
+      "Mesotélio",
+      "Fibras musculares",
+      "Adipócito"
+    ],
+    "answer": "Mesotélio",
+    "info": "💡 O mesotélio é o epitélio que reveste a superfície externa dos órgãos."
+  },
+  {
+    "text": "O que está indicado pelo número 4 na lâmina do Epicárdio?",
+    "img": "jogo_histologia_imagens/6.jpg",
+    "options": [
+      "Tecido muscular cardíaco longitudinal",
+      "Mesotélio",
+      "Fibras de Purkinje",
+      "Tecido adiposo"
+    ],
+    "answer": "Tecido muscular cardíaco longitudinal",
+    "info": "💡 Fibras longitudinais do coração aparecem com estriações alongadas."
+  },
+  {
+    "text": "Na lâmina da traqueia, o que está marcado como número 1?",
+    "img": "jogo_histologia_imagens/7.jpg",
+    "options": [
+      "Cartilagem hialina",
+      "Tecido muscular liso",
+      "Cílios",
+      "Glândula"
+    ],
+    "answer": "Tecido muscular liso",
+    "info": "💡 Tecido muscular liso é responsável pela contração involuntária das vias aéreas."
+  },
+  {
+    "text": "Qual estrutura corresponde ao número 2 na mesma lâmina da traqueia?",
+    "img": "jogo_histologia_imagens/7.jpg",
+    "options": [
+      "Tecido muscular",
+      "Cartilagem hialina",
+      "Tecido denso não modelado",
+      "Glândula"
+    ],
+    "answer": "Cartilagem hialina",
+    "info": "💡 Cartilagem hialina mantém a forma aberta da traqueia e tem matriz clara."
+  },
+  {
+    "text": "O que os cílios fazem na lâmina traqueal (1)?",
+    "img": "jogo_histologia_imagens/8.jpg",
+    "options": [
+      "Produzem muco",
+      "Filtram ar",
+      "Promovem batimento para remoção de muco",
+      "Transportam oxigênio"
+    ],
+    "answer": "Promovem batimento para remoção de muco",
+    "info": "💡 Cílios ajudam a remover partículas e muco das vias aéreas."
+  },
+  {
+    "text": "Na lâmina do brônquio, o que é o número 5?",
+    "img": "jogo_histologia_imagens/9.jpg",
+    "options": [
+      "Músculo liso",
+      "Cartilagem hialina",
+      "Epitélio simples",
+      "Mesotélio"
+    ],
+    "answer": "Cartilagem hialina",
+    "info": "💡 Cartilagem hialina dá sustentação ao brônquio, mantendo-o aberto."
+  },
+  {
+    "text": "O que está representado no número 3 da lâmina de alvéolos?",
+    "img": "jogo_histologia_imagens/10.jpg",
+    "options": [
+      "Pneumócito tipo II",
+      "Macrófago",
+      "Pneumócito tipo I",
+      "Bronquíolo"
+    ],
+    "answer": "Pneumócito tipo II",
+    "info": "💡 Pneumócitos tipo II produzem surfactante, substância que reduz a tensão superficial."
+  }
+];
+
+    let current = 0;
+    let timeLeft = 90;
+    let countdown;
+    let points = 0;
+
+    const questionText = document.getElementById('question-text');
+    const questionImg = document.getElementById('question-img');
+    const optionsDiv = document.getElementById('options');
+    const info = document.getElementById('info');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+    const timerDisplay = document.getElementById('timer');
+    const scoreDisplay = document.getElementById('score');
+
+    function loadQuestion() {
+      clearInterval(countdown);
+      timeLeft = 90;
+      timerDisplay.textContent = `Tempo restante: ${timeLeft} segundos`;
+      info.style.display = 'none';
+      feedback.style.display = 'none';
+      nextBtn.style.display = 'none';
+      optionsDiv.innerHTML = '';
+
+      const q = questions[current];
+      questionText.textContent = q.text;
+      questionImg.src = q.img;
+
+      q.options.forEach(option => {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q';
+        input.value = option;
+        input.addEventListener('change', () => showFeedback(option === q.answer));
+        label.appendChild(input);
+        label.append(` ${option}`);
+        optionsDiv.appendChild(label);
+      });
+
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `Tempo restante: ${timeLeft} segundos`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          showFeedback(false);
+        }
+      }, 1000);
+    }
+
+    function showFeedback(correct) {
+      clearInterval(countdown);
+      info.style.display = 'block';
+      info.textContent = questions[current].info;
+      feedback.style.display = 'block';
+      feedback.textContent = correct ? '🎉 Parabéns, você acertou!' : '😢 Que pena, você errou.';
+      if (correct) points++;
+      scoreDisplay.textContent = `Pontuação: ${points}`;
+      nextBtn.style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < questions.length) {
+        loadQuestion();
+      } else {
+        questionText.textContent = `Fim do jogo! Você fez ${points} ponto(s).`;
+        questionImg.style.display = 'none';
+        optionsDiv.innerHTML = '';
+        feedback.style.display = 'none';
+        info.style.display = 'none';
+        timerDisplay.style.display = 'none';
+        nextBtn.style.display = 'none';
+      }
+    }
+
+    window.onload = loadQuestion;
+  </script>
+</body>
+</html>
